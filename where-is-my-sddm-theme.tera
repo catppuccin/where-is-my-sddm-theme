@@ -1,0 +1,32 @@
+---
+whiskers:
+  version: "2.5.0"
+  hex_format: "#{{r}}{{g}}{{b}}"
+  matrix:
+    - flavor
+  filename: "themes/catppuccin-{{flavor.identifier}}.conf"
+---
+{%- set palette = flavor.colors -%}
+[General]
+background=
+backgroundFill={{ palette.base.hex | lower }}
+backgroundFillMode=aspect
+basicTextColor={{ palette.text.hex | lower }}
+blurRadius=0
+cursorBlinkAnimation=true
+hideCursor=true
+passwordAllowEmpty=false
+passwordCharacter=*
+passwordCursorColor={{ palette.text.hex | lower }}
+passwordFontSize=32
+passwordInputBackground={{ palette.surface0.hex | lower }}
+passwordInputCursorVisible=true
+passwordInputRadius=10
+passwordInputWidth=0.500000
+passwordMask=true
+passwordTextColor={{ palette.text.hex | lower }}
+sessionsFontSize=24
+showSessionsByDefault=true
+showUserRealNameByDefault=true
+showUsersByDefault=true
+usersFontSize=32
