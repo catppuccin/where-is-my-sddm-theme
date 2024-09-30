@@ -5,11 +5,13 @@ whiskers:
   matrix:
     - flavor
   filename: "themes/catppuccin-{{flavor.identifier}}.conf"
+background: ""
 backgroundFillMode: "aspect"
 blurRadius: 0
 cursorBlinkAnimation: true
 hideCursor: false
 passwordAllowEmpty: false
+passwordCharacter: "*"
 passwordFontSize: 32
 passwordInputCursorVisible: true
 passwordInputRadius: 10
@@ -17,13 +19,13 @@ passwordInputWidth: 0.5
 passwordMask: true
 sessionsFontSize: 24
 showSessionsByDefault: true
-showUsersByDefault: true
 showUserRealNameByDefault: true
+showUsersByDefault: true
 usersFontSize: 32
 ---
 {%- set palette = flavor.colors -%}
 [General]
-background=
+background={{ background }}
 backgroundFill={{ palette.base.hex | lower }}
 backgroundFillMode={{ backgroundFillMode }}
 basicTextColor={{ palette.text.hex | lower }}
@@ -31,7 +33,7 @@ blurRadius={{ blurRadius }}
 cursorBlinkAnimation={{ cursorBlinkAnimation }}
 hideCursor={{ hideCursor }}
 passwordAllowEmpty={{ passwordAllowEmpty }}
-passwordCharacter=*
+passwordCharacter={{ passwordCharacter }}
 passwordCursorColor={{ palette.text.hex | lower }}
 passwordFontSize={{ passwordFontSize }}
 passwordInputBackground={{ palette.surface0.hex | lower }}
