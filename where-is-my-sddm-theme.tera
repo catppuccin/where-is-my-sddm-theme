@@ -5,28 +5,43 @@ whiskers:
   matrix:
     - flavor
   filename: "themes/catppuccin-{{flavor.identifier}}.conf"
+backgroundFillMode: "aspect"
+blurRadius: 0
+cursorBlinkAnimation: true
+hideCursor: false
+passwordAllowEmpty: false
+passwordFontSize: 32
+passwordInputCursorVisible: true
+passwordInputRadius: 10
+passwordInputWidth: 0.5
+passwordMask: true
+sessionsFontSize: 24
+showSessionsByDefault: true
+showUsersByDefault: true
+showUserRealNameByDefault: true
+usersFontSize: 32
 ---
 {%- set palette = flavor.colors -%}
 [General]
 background=
 backgroundFill={{ palette.base.hex | lower }}
-backgroundFillMode=aspect
+backgroundFillMode={{ backgroundFillMode }}
 basicTextColor={{ palette.text.hex | lower }}
-blurRadius=0
-cursorBlinkAnimation=true
-hideCursor=false
-passwordAllowEmpty=false
+blurRadius={{ blurRadius }}
+cursorBlinkAnimation={{ cursorBlinkAnimation }}
+hideCursor={{ hideCursor }}
+passwordAllowEmpty={{ passwordAllowEmpty }}
 passwordCharacter=*
 passwordCursorColor={{ palette.text.hex | lower }}
-passwordFontSize=32
+passwordFontSize={{ passwordFontSize }}
 passwordInputBackground={{ palette.surface0.hex | lower }}
-passwordInputCursorVisible=true
-passwordInputRadius=10
-passwordInputWidth=0.500000
-passwordMask=true
+passwordInputCursorVisible={{ passwordInputCursorVisible }}
+passwordInputRadius={{ passwordInputRadius }}
+passwordInputWidth={{ passwordInputWidth }}
+passwordMask={{ passwordMask }}
 passwordTextColor={{ palette.text.hex | lower }}
-sessionsFontSize=24
-showSessionsByDefault=true
-showUserRealNameByDefault=true
-showUsersByDefault=true
-usersFontSize=32
+sessionsFontSize={{ sessionsFontSize }}
+showSessionsByDefault={{ showSessionsByDefault }}
+showUserRealNameByDefault={{ showUserRealNameByDefault }}
+showUsersByDefault={{ showUsersByDefault }}
+usersFontSize={{ usersFontSize }}
