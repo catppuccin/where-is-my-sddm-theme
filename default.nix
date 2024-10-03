@@ -61,10 +61,10 @@ lib.throwIfNot (builtins.elem flavor validFlavors)
             lib.optionalString (themeOverrides != null) "--overrides '${builtins.toJSON themeOverrides}'"
           }
         ''
-        + lib.optionalString (lib.elem "qt6" variants) ''
+        + lib.optionalString (builtins.elem "qt6" variants) ''
           mv $out/themes/catppuccin-${flavor}.conf $out/share/sddm/themes/where_is_my_sddm_theme/theme.conf.user
         ''
-        + lib.optionalString (lib.elem "qt5" variants) ''
+        + lib.optionalString (builtins.elem "qt5" variants) ''
           mv $out/themes/catppuccin-${flavor}.conf $out/share/sddm/themes/where_is_my_sddm_theme_qt5/theme.conf.user
         ''
         + ''
