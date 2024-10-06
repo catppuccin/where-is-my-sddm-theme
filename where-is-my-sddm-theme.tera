@@ -11,5 +11,5 @@ whiskers:
 backgroundFill={{ palette.base.hex | lower }}
 basicTextColor={{ palette.text.hex | lower }}
 passwordCursorColor={{ palette.text.hex | lower }}
-passwordInputBackground={{ palette.surface0.hex | lower }}
+passwordInputBackground={{ palette.base.hex | lower }}
 passwordTextColor={{ palette.text.hex | lower }}
