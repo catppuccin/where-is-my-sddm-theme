@@ -40,20 +40,6 @@
 2. Rename the file to either `theme.conf` or `theme.conf.user`.
 3. Move the selected flavor file to `/usr/share/sddm/themes/where_is_my_sddm_theme` or `~/.local/share/sddm/themes/where_is_my_sddm_theme`.
 
-## Customization
-
-This theme is built with [Whiskers](https://github.com/catppuccin/whiskers).
-
-If you wish to hide the cursor in the theme, you can override it as follows:
-
-```console
-whiskers where-is-my-sddm-theme.tera --overrides '{"hideCursor": true}'
-```
-
-Reinstall the rebuilt theme as described in [Usage](#usage).
-
-For more extensive changes you can edit [where-is-my-sddm-theme.tera](./where-is-my-sddm-theme.tera) to change the theme variables and rebuild with `whiskers where-is-my-sddm-theme.tera`.
-
 ## 💝 Thanks to
 
 - [HeitorAugustoLN](https://github.com/HeitorAugustoLN)
