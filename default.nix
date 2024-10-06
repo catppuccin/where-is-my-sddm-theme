@@ -1,33 +1,30 @@
 {
-  fetchFromGitHub,
   lib,
+  writeText,
   where-is-my-sddm-theme,
-  catppuccin-whiskers,
-  nix-update-script,
   /*
-    An example of how you can override the default values of the theme and change the flavor.
+     NOTE: Don't write a key that is already defined in the theme's configuration file.
+           The key will not be overwritten, and it will be defined twice in the configuration file.
+
+    Here is how you can define extra settings for the theme and the flavor to use:
 
     environment.systemPackages = [
       (pkgs.catppuccin-where-is-my-sddm-theme.override {
         flavor = "macchiato";
-        themeOverrides = {
-          blurRadius = 10;
-          hideCursor = true;
+        settings = {
+          General = {
+            hideCursor = false;
+          };
         };
       })
     ];
   */
-  themeOverrides ? null,
+  settings ? null,
   flavor ? "mocha",
   variants ? [ "qt6" ],
 }:
 let
-  theme = fetchFromGitHub {
-    owner = "HeitorAugustoLN";
-    repo = "catppuccin-where-is-my-sddm-theme";
-    rev = "main";
-    hash = "sha256-Cj1zrqBk45KxSG9MDOs3zDrEB5TMbqeT6RINFD1Lj6c=";
-  };
+  theme = ./.;
   validVariants = [
     "qt5"
     "qt6"
@@ -38,6 +35,18 @@ let
     "macchiato"
     "mocha"
   ];
+
+  themeContent = builtins.readFile "${theme}/themes/catppuccin-${flavor}.conf";
+  customThemeContent =
+    let
+      removeDuplicates =
+        string: builtins.concatStringsSep "\n" (lib.unique (lib.strings.splitString "\n" string));
+    in
+    if settings == null then
+      themeContent
+    else
+      removeDuplicates (themeContent + lib.generators.toINI { } settings);
+  customTheme = writeText "theme.conf.user" customThemeContent;
 in
 lib.throwIfNot (builtins.elem flavor validFlavors)
   "catppuccin-where-is-my-sddm-theme: flavor ${flavor} is not valid. Valid flavors are: ${builtins.concatStringsSep ", " validFlavors}"
@@ -51,27 +60,14 @@ lib.throwIfNot (builtins.elem flavor validFlavors)
       pname = "catppuccin-where-is-my-sddm-theme";
       version = "1.0.0";
 
-      nativeBuildInputs = [ catppuccin-whiskers ];
-
       installPhase =
         oldAttrs.installPhase
-        + ''
-          cd $out
-          whiskers ${theme}/where-is-my-sddm-theme.tera ${
-            lib.optionalString (themeOverrides != null) "--overrides '${builtins.toJSON themeOverrides}'"
-          }
-        ''
         + lib.optionalString (builtins.elem "qt6" variants) ''
-          cp $out/themes/catppuccin-${flavor}.conf $out/share/sddm/themes/where_is_my_sddm_theme/theme.conf.user
+          ln -sf ${customTheme} $out/share/sddm/themes/where_is_my_sddm_theme/theme.conf.user
         ''
         + lib.optionalString (builtins.elem "qt5" variants) ''
-          cp $out/themes/catppuccin-${flavor}.conf $out/share/sddm/themes/where_is_my_sddm_theme_qt5/theme.conf.user
-        ''
-        + ''
-          rm -rf $out/themes
+          ln -sf ${customTheme} $out/share/sddm/themes/where_is_my_sddm_theme_qt5/theme.conf.user
         '';
-
-      passthru.updateScript = nix-update-script { };
 
       meta = {
         description = "Soothing pastel theme for Where is my SDDM theme?";
