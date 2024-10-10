@@ -3,8 +3,8 @@
   writeText,
   where-is-my-sddm-theme,
   /*
-     NOTE: Don't write a key that is already defined in the theme's configuration file.
-           The key will not be overwritten, and it will be defined twice in the configuration file.
+    NOTE: Don't write a key that is already defined in the theme's configuration file.
+          The key will not be overwritten, and it will be defined twice in the configuration file.
 
     Here is how you can define extra settings for the theme and the flavor to use:
 
@@ -24,7 +24,10 @@
   variants ? [ "qt6" ],
 }:
 let
-  theme = ./.;
+  theme = builtins.path {
+    name = "catppuccin-where-is-my-sddm-theme";
+    src = ./.;
+  };
   validVariants = [
     "qt5"
     "qt6"
@@ -71,7 +74,7 @@ lib.throwIfNot (builtins.elem flavor validFlavors)
 
       meta = {
         description = "Soothing pastel theme for Where is my SDDM theme?";
-        homepage = "https://github.com/HeitorAugustoLN/catppuccin-where-is-my-sddm-theme";
+        homepage = "https://github.com/catppuccin/where-is-my-sddm-theme";
         license = lib.licenses.mit;
         maintainers = with lib.maintainers; [ HeitorAugustoLN ];
         inherit (oldAttrs.meta) platforms;
