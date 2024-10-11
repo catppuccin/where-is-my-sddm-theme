@@ -26,7 +26,7 @@
 let
   theme = builtins.path {
     name = "catppuccin-where-is-my-sddm-theme";
-    src = ./.;
+    path = ./.;
   };
   validVariants = [
     "qt5"
