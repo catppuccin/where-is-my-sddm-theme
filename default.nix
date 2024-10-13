@@ -1,11 +1,10 @@
 {
   lib,
   writeText,
+  runCommand,
+  jc,
   where-is-my-sddm-theme,
   /*
-    NOTE: Don't write a key that is already defined in the theme's configuration file.
-          The key will not be overwritten, and it will be defined twice in the configuration file.
-
     Here is how you can define extra settings for the theme and the flavor to use:
 
     environment.systemPackages = [
@@ -39,16 +38,18 @@ let
     "mocha"
   ];
 
-  themeContent = builtins.readFile "${theme}/themes/catppuccin-${flavor}.conf";
-  customThemeContent =
+  # Borrowed from catppuccin/nix
+  fromINI =
+    file:
     let
-      removeDuplicates =
-        string: builtins.concatStringsSep "\n" (lib.unique (lib.strings.splitString "\n" string));
+      json = runCommand "converted.json" { } ''${lib.getExe jc} --ini < ${file} > $out'';
     in
-    if settings == null then
-      themeContent
-    else
-      removeDuplicates (themeContent + lib.generators.toINI { } settings);
+    builtins.fromJSON (builtins.readFile json);
+
+  themeContent = fromINI "${theme}/themes/catppuccin-${flavor}.conf";
+  customThemeContent = lib.generators.toINI { } (
+    lib.recursiveUpdate themeContent (lib.optionalAttrs (settings != null) settings)
+  );
   customTheme = writeText "theme.conf.user" customThemeContent;
 in
 lib.throwIfNot (builtins.elem flavor validFlavors)
@@ -58,26 +59,24 @@ lib.throwIfNot (builtins.elem flavor validFlavors)
   validVariants
   variants
   (where-is-my-sddm-theme.override { inherit variants; }).overrideAttrs
-  (
-    finalAttrs: oldAttrs: {
-      pname = "catppuccin-where-is-my-sddm-theme";
-      version = "1.0.0";
+  (oldAttrs: {
+    pname = "catppuccin-where-is-my-sddm-theme";
+    version = "1.0.0";
 
-      installPhase =
-        oldAttrs.installPhase
-        + lib.optionalString (builtins.elem "qt6" variants) ''
-          ln -sf ${customTheme} $out/share/sddm/themes/where_is_my_sddm_theme/theme.conf.user
-        ''
-        + lib.optionalString (builtins.elem "qt5" variants) ''
-          ln -sf ${customTheme} $out/share/sddm/themes/where_is_my_sddm_theme_qt5/theme.conf.user
-        '';
+    installPhase =
+      oldAttrs.installPhase
+      + lib.optionalString (builtins.elem "qt6" variants) ''
+        ln -sf ${customTheme} $out/share/sddm/themes/where_is_my_sddm_theme/theme.conf.user
+      ''
+      + lib.optionalString (builtins.elem "qt5" variants) ''
+        ln -sf ${customTheme} $out/share/sddm/themes/where_is_my_sddm_theme_qt5/theme.conf.user
+      '';
 
-      meta = {
-        description = "Soothing pastel theme for Where is my SDDM theme?";
-        homepage = "https://github.com/catppuccin/where-is-my-sddm-theme";
-        license = lib.licenses.mit;
-        maintainers = with lib.maintainers; [ HeitorAugustoLN ];
-        inherit (oldAttrs.meta) platforms;
-      };
-    }
-  )
+    meta = {
+      description = "Soothing pastel theme for Where is my SDDM theme?";
+      homepage = "https://github.com/catppuccin/where-is-my-sddm-theme";
+      license = lib.licenses.mit;
+      maintainers = with lib.maintainers; [ HeitorAugustoLN ];
+      inherit (oldAttrs.meta) platforms;
+    };
+  })
