@@ -47,10 +47,7 @@ let
     builtins.fromJSON (builtins.readFile json);
 
   themeContent = fromINI "${theme}/themes/catppuccin-${flavor}.conf";
-  customThemeContent = lib.generators.toINI { } (
-    lib.recursiveUpdate themeContent (lib.optionalAttrs (settings != null) settings)
-  );
-  customTheme = writeText "theme.conf.user" customThemeContent;
+  customTheme = lib.recursiveUpdate themeContent (lib.optionalAttrs (settings != null) settings);
 in
 lib.throwIfNot (builtins.elem flavor validFlavors)
   "catppuccin-where-is-my-sddm-theme: flavor ${flavor} is not valid. Valid flavors are: ${builtins.concatStringsSep ", " validFlavors}"
@@ -58,19 +55,13 @@ lib.throwIfNot (builtins.elem flavor validFlavors)
   "catppuccin-where-is-my-sddm-theme: variant"
   validVariants
   variants
-  (where-is-my-sddm-theme.override { inherit variants; }).overrideAttrs
+  (where-is-my-sddm-theme.override {
+    inherit variants;
+    themeConfig = customTheme;
+  }).overrideAttrs
   (oldAttrs: {
     pname = "catppuccin-where-is-my-sddm-theme";
     version = "1.0.0";
-
-    installPhase =
-      oldAttrs.installPhase
-      + lib.optionalString (builtins.elem "qt6" variants) ''
-        ln -sf ${customTheme} $out/share/sddm/themes/where_is_my_sddm_theme/theme.conf.user
-      ''
-      + lib.optionalString (builtins.elem "qt5" variants) ''
-        ln -sf ${customTheme} $out/share/sddm/themes/where_is_my_sddm_theme_qt5/theme.conf.user
-      '';
 
     meta = {
       description = "Soothing pastel theme for Where is my SDDM theme?";
