@@ -1,4 +1,6 @@
 {
+  description = "Soothing pastel theme for Where is my SDDM theme?";
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
